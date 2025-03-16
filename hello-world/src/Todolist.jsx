@@ -7,10 +7,12 @@ export function Todolist({
   addTask,
   editTask,
   toggleTaskStatus,
+  allTasksCount,
+  activeTasksCount,
+  completedTasksCount,
 }) {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [editingTaskId, setEditingTaskId] = useState(null);
-  const [activeButton, setActiveButton] = useState("All");
 
   useEffect(() => {
     if (editingTaskId && !tasks.some((t) => t.id === editingTaskId)) {
@@ -43,10 +45,6 @@ export function Todolist({
     setNewTaskTitle("");
   };
 
-  const allTasksCount = tasks.length;
-  const activeTasksCount = tasks.filter((t) => !t.isDone).length;
-  const completedTasksCount = tasks.filter((t) => t.isDone).length;
-
   return (
     <div className="todolist">
       <div className="add-task">
@@ -61,13 +59,7 @@ export function Todolist({
         </button>
       </div>
       <div className="filters">
-        <button
-          className="ball"
-          onClick={() => {
-            changeFilter("All");
-            setActiveButton("All");
-          }}
-        >
+        <button className="ball" onClick={() => changeFilter("All")}>
           Все ({allTasksCount})
         </button>
         <button className="bactive" onClick={() => changeFilter("Active")}>

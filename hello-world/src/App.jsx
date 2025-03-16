@@ -96,31 +96,36 @@ function App() {
 
   const changeFilter = (value) => {
     setFilter(value);
-    fetchTasks(value);
   };
 
-  let tasksForTodolist = tasks;
-  if (filter === "Complited") {
-    tasksForTodolist = tasks.filter((t) => t.isDone === true);
+  // Фильтрация задач
+  let filteredTasks = tasks;
+  if (filter === "Completed") {
+    filteredTasks = tasks.filter((t) => t.isDone === true);
+  } else if (filter === "Active") {
+    filteredTasks = tasks.filter((t) => t.isDone === false);
   }
-  if (filter === "Active") {
-    tasksForTodolist = tasks.filter((t) => t.isDone === false);
-  }
+
+  // Подсчет количества задач
+  const allTasksCount = tasks.length;
+  const activeTasksCount = tasks.filter((t) => !t.isDone).length;
+  const completedTasksCount = tasks.filter((t) => t.isDone).length;
 
   return (
     <div className="App">
       <Todolist
-        tasks={tasksForTodolist}
+        tasks={filteredTasks}
         removeTask={removeTask}
         changeFilter={changeFilter}
         addTask={addTask}
         editTask={editTask}
-        setTasks={setTasks}
         toggleTaskStatus={toggleTaskStatus}
+        allTasksCount={allTasksCount}
+        activeTasksCount={activeTasksCount}
+        completedTasksCount={completedTasksCount}
       />
     </div>
   );
 }
 
 export default App;
-// asd
