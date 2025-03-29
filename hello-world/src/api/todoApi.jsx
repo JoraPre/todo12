@@ -1,4 +1,4 @@
-export const fetchTasks = async (status = "All") => {
+export const fetchTasks = async (status = "all") => {
   try {
     const response = await fetch(
       `https://easydev.club/api/v1/todos?filter=${status}`
@@ -63,7 +63,7 @@ export const toggleTaskStatus = async (id, currentStatus) => {
     if (!response.ok) throw new Error("Failed to update task status");
     return await response.json();
   } catch (error) {
-    console.error("Error task status:", error);
+    console.error("Error toggling task status:", error);
     throw error;
   }
 };
