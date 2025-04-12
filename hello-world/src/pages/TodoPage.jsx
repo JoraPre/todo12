@@ -1,4 +1,3 @@
-// src/pages/TodoPage.jsx
 import { useState, useEffect } from "react";
 import { CreateTodo } from "../components/CreateTodo";
 import { Filters } from "../components/Filters";
