@@ -1,3 +1,4 @@
+// src/components/TodoItem.jsx
 import React, { useState } from "react";
 
 export const TodoItem = ({ task, onRemove, onEdit, onToggle }) => {
@@ -5,15 +6,29 @@ export const TodoItem = ({ task, onRemove, onEdit, onToggle }) => {
   const [newTitle, setNewTitle] = useState(task.title);
 
   const handleSave = () => {
-    if (!newTitle.trim()) {
-      alert("Заголовок обязательное поле");
-      return;
+    try {
+      const title = newTitle.trim();
+
+      // Проверка на пустой заголовок
+      if (!title) throw new Error("Заголовок обязательное поле");
+
+      // Проверка длины заголовка
+      if (title.length < 2 || title.length > 64)
+        throw new Error("Заголовок должен быть от 2 до 64 символов");
+
+      // Вызов функции редактирования задачи
+      onEdit(task.id, title);
+
+      // Выход из режима редактирования
+      setIsEditing(false);
+    } catch (error) {
+      // Обработка ошибок
+      console.error("Ошибка при сохранении задачи:", error);
+      alert(error.message); // Показываем сообщение об ошибке
     }
-    if (newTitle.length < 2 || newTitle.length > 64) {
-      alert("Заголовок должен быть от 2 до 64 символов");
-      return;
-    }
-    onEdit(task.id, newTitle);
+  };
+
+  const handleCancel = () => {
     setIsEditing(false);
   };
 
@@ -27,7 +42,7 @@ export const TodoItem = ({ task, onRemove, onEdit, onToggle }) => {
             onChange={(e) => setNewTitle(e.target.value)}
           />
           <button onClick={handleSave}>Save</button>
-          <button onClick={() => setIsEditing(false)}>Cancel</button>
+          <button onClick={handleCancel}>Cancel</button>
         </div>
       ) : (
         <div className="view-mode">
@@ -39,13 +54,7 @@ export const TodoItem = ({ task, onRemove, onEdit, onToggle }) => {
               onChange={() => onToggle(task.id)}
             />
             <span className="checkmark"></span>
-            <span
-              style={{
-                textDecoration: task.isDone ? "line-through" : "none",
-                color: task.isDone ? "#808080" : "inherit",
-              }}
-              className="task-title"
-            >
+            <span className={`task-title ${task.isDone ? "completed" : ""}`}>
               {task.title}
             </span>
           </label>

@@ -1,3 +1,4 @@
+// src/api/todoApi.jsx
 export const fetchTasks = async (status = "all") => {
   try {
     const response = await fetch(
@@ -5,7 +6,7 @@ export const fetchTasks = async (status = "all") => {
     );
     if (!response.ok) throw new Error("Failed to fetch tasks");
     const data = await response.json();
-    return data.data;
+    return data;
   } catch (error) {
     console.error("Error fetching tasks:", error);
     throw error;
@@ -58,7 +59,7 @@ export const toggleTaskStatus = async (id, currentStatus) => {
     const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isDone: !currentStatus }),
+      body: JSON.stringify({ isDone: currentStatus }),
     });
     if (!response.ok) throw new Error("Failed to update task status");
     return await response.json();

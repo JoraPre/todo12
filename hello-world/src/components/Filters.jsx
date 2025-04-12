@@ -1,3 +1,4 @@
+// src/components/Filters.jsx
 import React from "react";
 
 export const Filters = ({ filter, onChangeFilter, counts }) => {
@@ -10,10 +11,10 @@ export const Filters = ({ filter, onChangeFilter, counts }) => {
         Все ({counts.all})
       </button>
       <button
-        className={`bactive ${filter === "active" ? "active" : ""}`}
-        onClick={() => onChangeFilter("active")}
+        className={`bactive ${filter === "inWork" ? "active" : ""}`}
+        onClick={() => onChangeFilter("inWork")}
       >
-        В работе ({counts.active})
+        В работе ({counts.inWork})
       </button>
       <button
         className={`bcompleted ${filter === "completed" ? "active" : ""}`}

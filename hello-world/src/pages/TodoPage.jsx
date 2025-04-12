@@ -1,9 +1,10 @@
+// src/pages/TodoPage.jsx
 import { useState, useEffect } from "react";
 import { CreateTodo } from "../components/CreateTodo";
 import { Filters } from "../components/Filters";
-import { TodoList } from "../components/TodoList";
+import { TodoList } from "../components/Todolist.jsx";
 import {
-  fetchTasks as apiFetchTasks,
+  fetchTasks,
   removeTask,
   addTask,
   editTask,
@@ -13,14 +14,16 @@ import {
 export function TodoPage() {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("all");
+  const [counts, setCounts] = useState({ all: 0, inWork: 0, completed: 0 });
 
   useEffect(() => {
     const loadTasks = async () => {
       try {
-        const data = await apiFetchTasks(filter);
-        setTasks(data);
+        const data = await fetchTasks(filter);
+        setTasks(data.data);
+        setCounts(data.info);
       } catch (error) {
-        console.error("Error fetching tasks:", error);
+        alert("Ошибка при загрузке задач");
       }
     };
     loadTasks();
@@ -28,49 +31,56 @@ export function TodoPage() {
 
   const handleAdd = async (title) => {
     try {
-      await addTask(title);
-      const data = await apiFetchTasks(filter);
-      setTasks(data);
+      const newTask = await addTask(title);
+      setTasks((prev) => [...prev, newTask]);
+      setCounts((prev) => ({
+        ...prev,
+        all: prev.all + 1,
+        inWork: prev.inWork + 1,
+      }));
     } catch (error) {
-      console.error("Error adding task:", error);
+      alert("Ошибка при добавлении задачи");
     }
   };
 
   const handleRemove = async (id) => {
     try {
       await removeTask(id);
-      const data = await apiFetchTasks(filter);
-      setTasks(data);
+      const removedTask = tasks.find((t) => t.id === id);
+      setTasks(tasks.filter((t) => t.id !== id));
+      setCounts((prev) => ({
+        ...prev,
+        all: prev.all - 1,
+        inWork: prev.inWork - (removedTask.isDone ? 0 : 1),
+        completed: prev.completed - (removedTask.isDone ? 1 : 0),
+      }));
     } catch (error) {
-      console.error("Error removing task:", error);
+      alert("Ошибка при удалении задачи");
     }
   };
 
   const handleEdit = async (id, newTitle) => {
     try {
-      await editTask(id, newTitle);
-      const data = await apiFetchTasks(filter);
-      setTasks(data);
+      const updatedTask = await editTask(id, newTitle);
+      setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
     } catch (error) {
-      console.error("Error editing task:", error);
+      alert("Ошибка при редактировании задачи");
     }
   };
 
   const handleToggle = async (id) => {
     try {
-      const taskToUpdate = tasks.find((task) => task.id === id);
-      await toggleTaskStatus(id, taskToUpdate.isDone);
-      const data = await apiFetchTasks(filter);
-      setTasks(data);
+      const task = tasks.find((t) => t.id === id);
+      const updatedTask = await toggleTaskStatus(id, !task.isDone);
+      setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
+      setCounts((prev) => ({
+        ...prev,
+        inWork: prev.inWork + (task.isDone ? 1 : -1),
+        completed: prev.completed + (task.isDone ? -1 : 1),
+      }));
     } catch (error) {
-      console.error("Error toggling task status:", error);
+      alert("Ошибка при изменении статуса задачи");
     }
-  };
-
-  const counts = {
-    all: tasks.length,
-    active: tasks.filter((t) => !t.isDone).length,
-    completed: tasks.filter((t) => t.isDone).length,
   };
 
   return (
