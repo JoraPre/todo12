@@ -169,14 +169,59 @@
   align-self: flex-end;
 }
 
-.ball:focus {
+/* .bactive:focus,
+.ball:focus,
+.bcompleted:focus {
   color: rgb(0, 157, 255);
   text-decoration: underline;
 }
 
-.bactive:focus,
-.ball:focus,
-.bcompleted:focus {
+.ball {
+  color: rgb(0, 157, 255);
+  text-decoration: underline;
+} */
+
+.bSave,
+.bCancel {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 7px;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  opacity: 0.7;
+
+  position: relative;
+}
+
+.bSave {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E");
+  background-color: rgb(0, 128, 0);
+}
+
+.bCancel {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M19 6.4L17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4z'/%3E%3C/svg%3E");
+  background-color: rgb(255, 0, 0);
+}
+
+/* Скрываем текст кнопок */
+.bSave span,
+.bCancel span {
+  font-size: 0;
+}
+.filters button.active {
+  color: rgb(0, 157, 255);
+  text-decoration: underline;
+}
+
+.filters button:focus {
+  color: rgb(0, 157, 255);
+}
+
+/* Начальное состояние для "Все" */
+.filters .ball.active {
   color: rgb(0, 157, 255);
   text-decoration: underline;
 }
