@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { addTask } from "../api/todoApi";
+import styles from "./CreateTodo.module.css";
+import { addTask } from "../../api/todoapi";
 
-export const CreateTodo = ({ onAdd }) => {
+export const CreateTodo = ({ onUpdateTodos }) => {
   const [newTaskTitle, setNewTaskTitle] = useState("");
 
   const handleAddTask = async () => {
@@ -11,28 +12,30 @@ export const CreateTodo = ({ onAdd }) => {
       if (title.length < 2 || title.length > 64)
         throw new Error("Заголовок должен быть от 2 до 64 символов");
       await addTask(title);
-      onAdd();
+      onUpdateTodos();
       setNewTaskTitle("");
     } catch (error) {
       alert(error.message);
     }
   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleAddTask();
+  };
+
+  const handleChangeTaskTitle = (e) => {
+    setNewTaskTitle(e.target.value);
+  };
 
   return (
-    <form
-      className="add-task"
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleAddTask();
-      }}
-    >
+    <form className={styles.addTask} onSubmit={handleSubmit}>
       <input
         placeholder="Task To Be Done"
-        className="input-edit"
+        className={styles.inputEdit}
         value={newTaskTitle}
-        onChange={(e) => setNewTaskTitle(e.target.value)}
+        onChange={handleChangeTaskTitle}
       />
-      <button className="btn-add" type="submit">
+      <button className={styles.btnAdd} type="submit">
         Add
       </button>
     </form>

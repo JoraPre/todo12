@@ -1,58 +1,4 @@
-.todolist {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.add-task {
-  display: flex;
-  gap: 0.625rem; /* 10px */
-  margin-bottom: 1.25rem; /* 20px */
-  width: 100%;
-}
-
-.input-edit {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  border-bottom: solid rgb(204, 204, 204);
-  font-size: 16px;
-  border-radius: 0px;
-}
-
-.btn-add {
-  margin-left: auto;
-  padding: 12px 24px;
-  background-color: rgb(0, 0, 255);
-  color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.filters {
-  display: flex;
-  gap: 0.625rem; /* 10px */
-  margin-bottom: 1.25rem; /* 20px */
-}
-
-.filters button {
-  padding: 10px 16px;
-  background-color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.task-list {
-  list-style: none;
-  padding: 0;
-}
-
-.task-item {
+.taskItem {
   display: flex;
   align-items: center;
   padding: 16px;
@@ -62,13 +8,27 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.checkbox-container {
+.taskItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.viewMode {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.checkboxContainer {
   display: flex;
   align-items: center;
   margin-right: 1rem;
 }
 
-.checkbox-input {
+.checkboxInput {
   appearance: none;
   width: 24px;
   height: 24px;
@@ -78,7 +38,7 @@
   margin: 0;
 }
 
-.checkbox-input:checked {
+.checkboxInput:checked {
   background-color: rgb(0, 0, 255);
   border-color: rgb(0, 0, 255);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgb(255,255,255)'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
@@ -87,79 +47,16 @@
   background-repeat: no-repeat;
 }
 
-.task-title {
+.taskTitle {
   overflow-wrap: anywhere;
   flex: 1;
   margin-left: 16px;
   font-size: 16px;
 }
 
-.btn-delete,
-.btn-edit {
-  width: 24px;
-  height: 24px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  border: none;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-
-.btn-delete:hover,
-.btn-edit:hover {
-  opacity: 1;
-}
-
-.btn-delete {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z' fill='rgb(255,255,255)'/%3E%3C/svg%3E");
-  background-color: rgb(255, 0, 0);
-  background-size: 50%;
-  background-repeat: no-repeat;
-  background-position: center;
-  height: 40px;
-  width: 40px;
-  border-radius: 7px;
-}
-
-.btn-edit {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z' fill='rgb(255,255,255)'/%3E%3C/svg%3E");
-  background-color: rgb(0, 0, 255);
-  background-size: 50%;
-  background-repeat: no-repeat;
-  background-position: center;
-  height: 40px;
-  width: 40px;
-  border-radius: 7px;
-}
-
-.edit-mode input {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid rgb(204, 204, 204);
-  border-radius: 4px;
-  margin-right: 8px;
-}
-
-.bactive,
-.ball,
-.bcompleted {
+.completed {
+  text-decoration: line-through;
   color: rgb(128, 128, 128);
-  font-size: 15px;
-}
-
-.task-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.view-mode {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
 }
 
 .actions {
@@ -169,17 +66,48 @@
   align-self: flex-end;
 }
 
-/* .bactive:focus,
-.ball:focus,
-.bcompleted:focus {
-  color: rgb(0, 157, 255);
-  text-decoration: underline;
+.btnDelete,
+.btnEdit {
+  width: 40px;
+  height: 40px;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  border-radius: 7px;
+  transition: opacity 0.2s;
 }
 
-.ball {
-  color: rgb(0, 157, 255);
-  text-decoration: underline;
-} */
+.btnDelete:hover,
+.btnEdit:hover {
+  opacity: 1;
+}
+
+.btnDelete {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z' fill='rgb(255,255,255)'/%3E%3C/svg%3E");
+  background-color: rgb(255, 0, 0);
+}
+
+.btnEdit {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z' fill='rgb(255,255,255)'/%3E%3C/svg%3E");
+  background-color: rgb(0, 0, 255);
+}
+
+.editMode {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.editInput {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 4px;
+  margin-right: 8px;
+}
 
 .bSave,
 .bCancel {
@@ -192,7 +120,6 @@
   background-position: center;
   cursor: pointer;
   opacity: 0.7;
-
   position: relative;
 }
 
@@ -210,18 +137,4 @@
 .bSave span,
 .bCancel span {
   font-size: 0;
-}
-.filters button.active {
-  color: rgb(0, 157, 255);
-  text-decoration: underline;
-}
-
-.filters button:focus {
-  color: rgb(0, 157, 255);
-}
-
-/* Начальное состояние для "Все" */
-.filters .ball.active {
-  color: rgb(0, 157, 255);
-  text-decoration: underline;
 }
