@@ -134,7 +134,7 @@
 }
 
 /* Скрываем текст кнопок */
-.bSave span,
-.bCancel span {
+.bSave,
+.bCancel {
   font-size: 0;
 }
