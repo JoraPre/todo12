@@ -68,8 +68,8 @@
 
 .btnDelete,
 .btnEdit {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   background-size: 50%;
   background-repeat: no-repeat;
   background-position: center;
@@ -111,8 +111,8 @@
 
 .bSave,
 .bCancel {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border: none;
   border-radius: 7px;
   background-size: 50%;
@@ -136,5 +136,9 @@
 /* Скрываем текст кнопок */
 .bSave,
 .bCancel {
+  font-size: 0;
+}
+.btnEdit,
+.btnDelete {
   font-size: 0;
 }

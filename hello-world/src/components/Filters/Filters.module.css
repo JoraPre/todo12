@@ -1,4 +1,4 @@
-.filters {
+/* .filters {
   display: flex;
   gap: 0.625rem;
   margin-bottom: 1.25rem;
@@ -18,4 +18,9 @@
 .active {
   color: rgb(0, 157, 255);
   text-decoration: underline;
-}
+} */
+/* .filteredTodos {
+  width: 20%;
+  display: flex;
+  margin: 15px auto 20px;
+} */

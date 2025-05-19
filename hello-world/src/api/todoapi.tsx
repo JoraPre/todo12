@@ -1,72 +1,49 @@
-export type Task = {
-  id: number;
-  title: string;
-  isDone: boolean;
-};
+import { ApiResponse, Task } from "../types.ts/Todot";
+import axios from "axios";
 
-export type ApiResponse = {
-  data: Task[];
-  info: {
-    all: number;
-    inWork: number;
-    completed: number;
-  };
-};
-
-type FilterStatus = "all" | "inWork" | "completed";
+const API = "https://easydev.club/api/v2/todos";
 
 export const fetchTasks = async (
-  status: FilterStatus = "all"
-): Promise<ApiResponse> => {
+  status: "all" | "inWork" | "completed" = "all"
+) => {
   try {
-    const response = await fetch(
-      `https://easydev.club/api/v1/todos?filter=${status}`
-    );
-    if (!response.ok) throw new Error("Failed to fetch tasks");
-    return await response.json();
+    const response = await axios.get<ApiResponse>(`${API}?filter=${status}`);
+    return response.data;
   } catch (error) {
-    console.error("Error fetching tasks:", error);
+    console.error("Ошибка при загрузке данныхх:", error);
     throw error;
   }
 };
 
 export const removeTask = async (id: number): Promise<void> => {
   try {
-    await fetch(`https://easydev.club/api/v1/todos/${id}`, {
-      method: "DELETE",
-    });
+    await axios.delete(`${API}/${id}`);
   } catch (error) {
-    console.error("Error removing task:", error);
-    throw error;
+    console.error("Не удалось удалить todo:", error);
   }
 };
 
 export const addTask = async (title: string): Promise<Task> => {
   try {
-    const response = await fetch("https://easydev.club/api/v1/todos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, isDone: false }),
+    const response = await axios.post(API, {
+      title,
+      isDone: false,
     });
-    if (!response.ok) throw new Error("Failed to add task");
-    return await response.json();
+    return response.data;
   } catch (error) {
-    console.error("Error adding task:", error);
+    console.error("Возникла ошибка при добавлении todo:", error);
     throw error;
   }
 };
 
 export const editTask = async (id: number, newTitle: string): Promise<Task> => {
   try {
-    const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: newTitle }),
+    const response = await axios.put(`${API}/${id}`, {
+      title: newTitle,
     });
-    if (!response.ok) throw new Error("Failed to edit task");
-    return await response.json();
+    return response.data;
   } catch (error) {
-    console.error("Error editing task:", error);
+    console.error("Ошибка при изменении задачи", error);
     throw error;
   }
 };
@@ -76,15 +53,12 @@ export const toggleTaskStatus = async (
   isDone: boolean
 ): Promise<Task> => {
   try {
-    const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isDone }),
+    const response = await axios.put(`${API}/${id}`, {
+      isDone,
     });
-    if (!response.ok) throw new Error("Failed to update task status");
-    return await response.json();
+    return response.data;
   } catch (error) {
-    console.error("Error toggling task status:", error);
+    console.error("Ошибка при смене задачи:", error);
     throw error;
   }
 };

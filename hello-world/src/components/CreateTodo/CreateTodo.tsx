@@ -1,39 +1,53 @@
 import React, { useState } from "react";
-import styles from "./CreateTodo.module.css";
+import { Form, Input, Button } from "antd";
 import { addTask } from "../../api/todoapi";
-
-type CreateTodoProps = {
-  onUpdateTodos: () => void;
-};
+import { CreateTodoProps } from "../../types.ts/Todot";
+import styles from "./CreateTodo.module.css";
 
 export const CreateTodo: React.FC<CreateTodoProps> = ({ onUpdateTodos }) => {
-  const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
   const handleAddTask = async () => {
     try {
-      const title = newTaskTitle.trim();
+      const values = await form.validateFields();
+      const title = values.title.trim();
+
       if (!title) throw new Error("Заголовок обязательное поле");
-      if (title.length < 2 || title.length > 64)
-        throw new Error("Заголовок должен быть от 2 до 64 символов");
+
+      setLoading(true);
       await addTask(title);
       onUpdateTodos();
-      setNewTaskTitle("");
+      form.resetFields();
     } catch (error) {
-      alert(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form className={styles.addTask} onSubmit={(e) => e.preventDefault()}>
-      <input
-        placeholder="Task To Be Done"
-        className={styles.inputEdit}
-        value={newTaskTitle}
-        onChange={(e) => setNewTaskTitle(e.target.value)}
-      />
-      <button className={styles.btnAdd} type="button" onClick={handleAddTask}>
+    <Form
+      className={styles.addTask}
+      form={form}
+      layout="inline"
+      onFinish={handleAddTask}
+    >
+      <Form.Item
+        name="title"
+        rules={[
+          { required: true, message: "Введите заголовок!" },
+          {
+            min: 2,
+            max: 64,
+            message: "Заголовок должен быть от 2 до 64 символов!",
+          },
+        ]}
+      >
+        <Input className={styles.inputEdit} placeholder="Task To Be Done" />
+      </Form.Item>
+      <Button type="primary" htmlType="submit" loading={loading}>
         Add
-      </button>
-    </form>
+      </Button>
+    </Form>
   );
 };
