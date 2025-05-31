@@ -1,122 +1,98 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { TodoItemProps } from "../../types.ts/Todot";
 import { Card, Checkbox, Button, Form, Input } from "antd";
 import { toggleTaskStatus, editTask, removeTask } from "../../api/todoapi";
-import styles from "./TodoItem.module.css";
 
-export const TodoItem: React.FC<TodoItemProps> = ({ task, onUpdateTodos }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [newTitle, setNewTitle] = useState(task.title);
-  const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
+export const TodoItem: React.FC<TodoItemProps> = React.memo(
+  ({ task, onUpdateTodos }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [newTitle, setNewTitle] = useState(task.title);
+    const [loading, setLoading] = useState(false);
+    const [form] = Form.useForm();
 
-  const handleDelete = async () => {
-    try {
-      setLoading(true);
-      await removeTask(task.id);
-      onUpdateTodos();
-    } catch (error) {
-      alert("Ошибка при удалении задачи");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleDelete = useCallback(async () => {
+      try {
+        setLoading(true);
+        await removeTask(task.id);
+        onUpdateTodos();
+      } catch {
+        alert("Ошибка при удалении задачи");
+      } finally {
+        setLoading(false);
+      }
+    }, [task.id, onUpdateTodos]);
 
-  const handleSave = async (values: { title: string }) => {
-    try {
-      const title = values.title.trim();
-      setLoading(true);
-      await editTask(task.id, title);
-      onUpdateTodos();
-      setIsEditing(false);
-    } catch (error) {
-      alert("Ошибка при сохранении изменений");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleSave = useCallback(
+      async (values: { title: string }) => {
+        try {
+          const title = values.title.trim();
+          setLoading(true);
+          await editTask(task.id, title);
+          onUpdateTodos();
+          setIsEditing(false);
+        } catch {
+          alert("Ошибка при сохранении изменений");
+        } finally {
+          setLoading(false);
+        }
+      },
+      [task.id, onUpdateTodos]
+    );
 
-  const handleToggle = async () => {
-    try {
-      setLoading(true);
-      await toggleTaskStatus(task.id, !task.isDone);
-      onUpdateTodos();
-    } catch (error) {
-      alert("Ошибка при изменении статуса");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleToggle = useCallback(async () => {
+      try {
+        setLoading(true);
+        await toggleTaskStatus(task.id, !task.isDone);
+        onUpdateTodos();
+      } catch {
+        alert("Ошибка при изменении статуса");
+      } finally {
+        setLoading(false);
+      }
+    }, [task.id, task.isDone, onUpdateTodos]);
 
-  return (
-    <Card className={styles.taskItem}>
-      {isEditing ? (
-        <Form
-          form={form}
-          layout="inline"
-          onFinish={handleSave}
-          initialValues={{ title: task.title }}
-          className={styles.editMode}
-        >
-          <Form.Item
-            name="title"
-            rules={[
-              { required: true, message: "Заголовок обязательное поле!" },
-              {
-                min: 2,
-                max: 64,
-                message: "Заголовок должен быть от 2 до 64 символов!",
-              },
-            ]}
+    return (
+      <Card>
+        {isEditing ? (
+          <Form
+            form={form}
+            layout="inline"
+            onFinish={handleSave}
+            initialValues={{ title: task.title }}
           >
-            <Input className={styles.editInput} />
-          </Form.Item>
-          <Button htmlType="submit" type="primary" className={styles.bSave}>
-            Save
-          </Button>
-          <Button
-            onClick={() => setIsEditing(false)}
-            type="primary"
-            className={styles.bCancel}
-          >
-            Cancel
-          </Button>
-        </Form>
-      ) : (
-        <div className={styles.viewMode}>
-          <div className={styles.checkboxContainer}>
-            <Checkbox
-              checked={task.isDone}
-              onChange={handleToggle}
-              disabled={loading}
-            />
-            <span className={styles.checkmark}></span>
-            <span
-              className={
-                styles.taskTitle + " " + (task.isDone ? styles.completed : "")
-              }
+            <Form.Item
+              name="title"
+              rules={[
+                { required: true, message: "Заголовок обязательное поле!" },
+                {
+                  min: 2,
+                  max: 64,
+                  message: "Заголовок должен быть от 2 до 64 символов!",
+                },
+              ]}
             >
-              {task.title}
-            </span>
+              <Input />
+            </Form.Item>
+            <Button htmlType="submit">Save</Button>
+            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+          </Form>
+        ) : (
+          <div>
+            <div>
+              <Checkbox
+                checked={task.isDone}
+                onChange={handleToggle}
+                disabled={loading}
+              />
+              <span>{task.title}</span>
+            </div>
+            <div>
+              <Button onClick={handleDelete}>Delete</Button>
+              <Button onClick={() => setIsEditing(true)}>Edit</Button>
+            </div>
           </div>
-          <div className={styles.actions}>
-            <Button
-              onClick={handleDelete}
-              type="primary"
-              className={styles.btnDelete}
-            >
-              Delete
-            </Button>
-            <Button
-              onClick={() => setIsEditing(true)}
-              type="primary"
-              className={styles.btnEdit}
-            >
-              Edit
-            </Button>
-          </div>
-        </div>
-      )}
-    </Card>
-  );
-};
+        )}
+      </Card>
+    );
+  }
+);
