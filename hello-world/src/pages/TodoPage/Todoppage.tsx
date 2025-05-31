@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Card } from "antd";
 import { fetchTasks } from "../../api/todoapi";
 import { CreateTodo } from "../../components/CreateTodo/CreateTodo";
@@ -17,7 +17,7 @@ export const TodoPage: React.FC = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
 
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
     try {
       setLoading(true);
       const data = await fetchTasks(filter);
@@ -27,7 +27,7 @@ export const TodoPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filter]);
 
   useEffect(() => {
     let intervalId: number | undefined;

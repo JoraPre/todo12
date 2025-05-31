@@ -2,8 +2,8 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { TodoPage } from "../pages/TodoPage/Todoppage";
 import { ProfilePage } from "./profilePages";
-import { Layout } from "antd";
-import { Menu } from "antd";
+import { Layout, Menu } from "antd";
+
 import { Link } from "react-router-dom";
 import styles from "./rout.module.css";
 

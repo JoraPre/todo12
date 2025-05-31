@@ -133,7 +133,6 @@
   background-color: rgb(255, 0, 0);
 }
 
-/* Скрываем текст кнопок */
 .bSave,
 .bCancel {
   font-size: 0;

@@ -8,6 +8,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({ task, onUpdateTodos }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newTitle, setNewTitle] = useState(task.title);
   const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
 
   const handleDelete = async () => {
     try {
@@ -21,20 +22,15 @@ export const TodoItem: React.FC<TodoItemProps> = ({ task, onUpdateTodos }) => {
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = async (values: { title: string }) => {
     try {
-      const title = newTitle.trim();
-
-      if (!title) throw new Error("Заголовок обязательное поле");
-      if (title.length < 2 || title.length > 64)
-        throw new Error("Заголовок должен быть от 2 до 64 символов");
-
+      const title = values.title.trim();
       setLoading(true);
       await editTask(task.id, title);
       onUpdateTodos();
       setIsEditing(false);
     } catch (error) {
-      alert(error.message);
+      alert("Ошибка при сохранении изменений");
     } finally {
       setLoading(false);
     }
@@ -55,9 +51,15 @@ export const TodoItem: React.FC<TodoItemProps> = ({ task, onUpdateTodos }) => {
   return (
     <Card className={styles.taskItem}>
       {isEditing ? (
-        <div className={styles.editMode}>
+        <Form
+          form={form}
+          layout="inline"
+          onFinish={handleSave}
+          initialValues={{ title: task.title }}
+          className={styles.editMode}
+        >
           <Form.Item
-            name={`title-${task.id}`}
+            name="title"
             rules={[
               { required: true, message: "Заголовок обязательное поле!" },
               {
@@ -67,14 +69,9 @@ export const TodoItem: React.FC<TodoItemProps> = ({ task, onUpdateTodos }) => {
               },
             ]}
           >
-            <Input
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              onPressEnter={handleSave}
-              className={styles.editInput}
-            />
+            <Input className={styles.editInput} />
           </Form.Item>
-          <Button onClick={handleSave} type="primary" className={styles.bSave}>
+          <Button htmlType="submit" type="primary" className={styles.bSave}>
             Save
           </Button>
           <Button
@@ -84,7 +81,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({ task, onUpdateTodos }) => {
           >
             Cancel
           </Button>
-        </div>
+        </Form>
       ) : (
         <div className={styles.viewMode}>
           <div className={styles.checkboxContainer}>
@@ -95,9 +92,9 @@ export const TodoItem: React.FC<TodoItemProps> = ({ task, onUpdateTodos }) => {
             />
             <span className={styles.checkmark}></span>
             <span
-              className={`${styles.taskTitle} ${
-                task.isDone ? styles.completed : ""
-              }`}
+              className={
+                styles.taskTitle + " " + (task.isDone ? styles.completed : "")
+              }
             >
               {task.title}
             </span>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Segmented } from "antd";
-import { FiltersProps } from "../../types.ts/Todot";
-import { FilterStatus } from "../../types.ts/Todot";
+import { FiltersProps, FilterStatus } from "../../types.ts/Todot";
+
 // import styles from "./Filters.module.css";
 
 export const Filters: React.FC<FiltersProps> = ({
