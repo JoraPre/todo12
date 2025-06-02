@@ -1,7 +1,12 @@
 import React from "react";
 import { List } from "antd";
 import { TodoItem } from "../TodoItem/TodoItem";
-import { TodoListProps } from "../../types.ts/Todot";
+import { Task } from "../../types.ts/Todot";
+
+export type TodoListProps = {
+  tasks: Task[];
+  onUpdateTodos: () => void;
+};
 
 export const TodoList: React.FC<TodoListProps> = ({ tasks, onUpdateTodos }) => {
   return (

@@ -1,4 +1,4 @@
-import { ApiResponse, Task } from "../types.ts/Todot";
+import { ApiResponse, Task, FilterStatus } from "../types.ts/Todot";
 import axios from "axios";
 
 const API = "https://easydev.club/api/";
@@ -11,7 +11,7 @@ export const apiClient = axios.create({
 });
 
 export const fetchTasks = async (
-  status: "all" | "inWork" | "completed" = "all"
+  status: FilterStatus = "all"
 ): Promise<ApiResponse> => {
   try {
     const response = await apiClient.get<ApiResponse>("/v1/todos", {

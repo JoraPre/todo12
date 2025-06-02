@@ -1,7 +1,13 @@
 import React, { useState, useCallback } from "react";
-import { TodoItemProps } from "../../types.ts/Todot";
+import { Task } from "../../types.ts/Todot";
 import { Card, Checkbox, Button, Form, Input } from "antd";
 import { toggleTaskStatus, editTask, removeTask } from "../../api/todoapi";
+import { TITLE_MAX_LENGTH, TITLE_MIN_LENGTH } from "../../constants";
+
+type TodoItemProps = {
+  task: Task;
+  onUpdateTodos: () => void;
+};
 
 export const TodoItem: React.FC<TodoItemProps> = React.memo(
   ({ task, onUpdateTodos }) => {
@@ -10,7 +16,7 @@ export const TodoItem: React.FC<TodoItemProps> = React.memo(
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
 
-    const handleDelete = useCallback(async () => {
+    const handleDelete = async () => {
       try {
         setLoading(true);
         await removeTask(task.id);
@@ -20,26 +26,23 @@ export const TodoItem: React.FC<TodoItemProps> = React.memo(
       } finally {
         setLoading(false);
       }
-    }, [task.id, onUpdateTodos]);
+    };
 
-    const handleSave = useCallback(
-      async (values: { title: string }) => {
-        try {
-          const title = values.title.trim();
-          setLoading(true);
-          await editTask(task.id, title);
-          onUpdateTodos();
-          setIsEditing(false);
-        } catch {
-          alert("Ошибка при сохранении изменений");
-        } finally {
-          setLoading(false);
-        }
-      },
-      [task.id, onUpdateTodos]
-    );
+    const handleSave = async (values: { title: string }) => {
+      try {
+        const title = values.title.trim();
+        setLoading(true);
+        await editTask(task.id, title);
+        onUpdateTodos();
+        setIsEditing(false);
+      } catch {
+        alert("Ошибка при сохранении изменений");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const handleToggle = useCallback(async () => {
+    const handleToggle = async () => {
       try {
         setLoading(true);
         await toggleTaskStatus(task.id, !task.isDone);
@@ -49,7 +52,7 @@ export const TodoItem: React.FC<TodoItemProps> = React.memo(
       } finally {
         setLoading(false);
       }
-    }, [task.id, task.isDone, onUpdateTodos]);
+    };
 
     return (
       <Card>
@@ -65,9 +68,9 @@ export const TodoItem: React.FC<TodoItemProps> = React.memo(
               rules={[
                 { required: true, message: "Заголовок обязательное поле!" },
                 {
-                  min: 2,
-                  max: 64,
-                  message: "Заголовок должен быть от 2 до 64 символов!",
+                  min: TITLE_MIN_LENGTH,
+                  max: TITLE_MAX_LENGTH,
+                  message: `Заголовок должен быть от ${TITLE_MIN_LENGTH} до ${TITLE_MAX_LENGTH} символов!`,
                 },
               ]}
             >

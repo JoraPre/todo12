@@ -1,8 +1,16 @@
 import React from "react";
 import { Segmented } from "antd";
-import { FiltersProps, FilterStatus } from "../../types.ts/Todot";
+import { FilterStatus } from "../../types.ts/Todot";
 
-// import styles from "./Filters.module.css";
+export type FiltersProps = {
+  filter: FilterStatus;
+  onChangeFilter: (status: FilterStatus) => void;
+  counts: {
+    all: number;
+    inWork: number;
+    completed: number;
+  };
+};
 
 export const Filters: React.FC<FiltersProps> = ({
   filter,
