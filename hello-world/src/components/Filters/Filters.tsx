@@ -1,15 +1,11 @@
 import React from "react";
 import { Segmented } from "antd";
-import { FilterStatus } from "../../types.ts/Todot";
+import { FilterStatus, TaskInfo } from "../../types.ts/Todot";
 
 export type FiltersProps = {
   filter: FilterStatus;
   onChangeFilter: (status: FilterStatus) => void;
-  counts: {
-    all: number;
-    inWork: number;
-    completed: number;
-  };
+  counts: TaskInfo<number>;
 };
 
 export const Filters: React.FC<FiltersProps> = ({

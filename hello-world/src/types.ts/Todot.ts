@@ -4,6 +4,12 @@ export type Task = {
   isDone: boolean;
 };
 
+export type TaskInfo<T> = {
+  all: T;
+  inWork: T;
+  completed: T;
+};
+
 export type ApiResponse = {
   data: Task[];
   info: {
