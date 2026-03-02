@@ -1,12 +1,14 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/sideBar/sideBar";
+import SideBar from "../components/sideBar/SideBar";
 
 export const AppLayout: React.FC = () => {
   return (
     <>
-      <Sidebar />
-      <Outlet />
+      <SideBar />
+      <div style={{ marginLeft: 240 }}>
+        <Outlet />
+      </div>
     </>
   );
 };

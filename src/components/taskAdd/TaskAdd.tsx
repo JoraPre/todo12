@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Button, Col, Row, Input, message, Form, type FormProps } from "antd";
-import { createTask } from "../../Api/apiclone1";
+import { createTask } from "../../api/api";
 
 type TaskAddProps = {
   updateTasks: () => Promise<void>;
@@ -8,25 +8,22 @@ type TaskAddProps = {
 
 const TASK_INPUT_LENGTH = { MIN: 1, MAX: 100 };
 
+const validationRules = [
+  { required: true, message: "Название задачи обязательно" },
+  {
+    min: TASK_INPUT_LENGTH.MIN,
+    message: `Минимум ${TASK_INPUT_LENGTH.MIN} символов`,
+  },
+  {
+    max: TASK_INPUT_LENGTH.MAX,
+    message: `Максимум ${TASK_INPUT_LENGTH.MAX} символов`,
+  },
+];
+
 const TaskAdd: React.FC<TaskAddProps> = ({ updateTasks }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm();
   const [isCreating, setIsCreating] = useState(false);
-
-  const validationRules = useMemo(
-    () => [
-      { required: true, message: "Название задачи обязательно" },
-      {
-        min: TASK_INPUT_LENGTH.MIN,
-        message: `Минимум ${TASK_INPUT_LENGTH.MIN} символов`,
-      },
-      {
-        max: TASK_INPUT_LENGTH.MAX,
-        message: `Максимум ${TASK_INPUT_LENGTH.MAX} символов`,
-      },
-    ],
-    []
-  );
 
   const handleCreate: FormProps["onFinish"] = async (values) => {
     setIsCreating(true);
@@ -47,7 +44,7 @@ const TaskAdd: React.FC<TaskAddProps> = ({ updateTasks }) => {
 
   return (
     <div style={{ width: 400, margin: "0 auto" }}>
-      <Form className="new-task" form={form} onFinish={handleCreate}>
+      <Form form={form} onFinish={handleCreate}>
         {contextHolder}
         <Row gutter={[16, 0]}>
           <Col xs={24} sm={18}>

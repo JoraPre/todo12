@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Link,
-  useSearchParams,
-  useNavigation,
-  useSubmit,
-  useActionData,
-} from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Form, Button, Input, Typography, Row, Col, message } from "antd";
 import {
   usernameRules,
@@ -14,53 +8,68 @@ import {
   confirmPasswordRules,
   emailRules,
   phoneNumberRules,
-} from "../../validationRules/validationRules1";
-import authImage from "../../imggg/authhh.png";
+} from "../../validationRules/validationRules";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { login, register } from "../../store/authStore";
+import type { UserLogin, UserRegistration } from "../../types/auth";
+import authImage from "../../img/auth.png";
 
 const { Title } = Typography;
 
-type FieldType = {
+type SignInFields = {
   login: string;
-  username: string;
   password: string;
+};
+
+type SignUpFields = SignInFields & {
+  username: string;
   email: string;
   phoneNumber: string;
   confirmPassword: string;
 };
 
-const AuthenticationPage: React.FC = () => {
+type FieldType = SignInFields | SignUpFields;
+
+const AuthForm: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [form] = Form.useForm();
-  const navigation = useNavigation();
-  const submit = useSubmit();
-  const actionData: { success: boolean; message: string } | undefined =
-    useActionData();
+  const [form] = Form.useForm<FieldType>();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { status, error } = useAppSelector((state) => state.auth);
+
   const [searchParams] = useSearchParams();
   const isLogin = searchParams.get("mode") === "signin";
-  const isSubmitting = navigation.state === "submitting";
+  const isSubmitting = status === "loading";
 
   useEffect(() => {
-    if (actionData) {
-      messageApi.open({
-        type: actionData.success ? "success" : "error",
-        content: actionData.message,
-        duration: actionData.success ? 10 : 5,
-      });
-      if (actionData.success) {
+    if (status === "failed" && error) {
+      messageApi.error(error);
+    }
+  }, [status, error, messageApi]);
+
+  const handleSubmit = async (values: FieldType) => {
+    if (isLogin) {
+      const result = await dispatch(login(values as UserLogin));
+      if (login.fulfilled.match(result)) {
+        navigate("/");
+      }
+    } else {
+      const signUpValues = values as SignUpFields;
+      const registrationData: UserRegistration = {
+        login: signUpValues.login,
+        username: signUpValues.username,
+        password: signUpValues.password,
+        email: signUpValues.email,
+      };
+      if (signUpValues.phoneNumber?.trim()) {
+        registrationData.phoneNumber = "+" + signUpValues.phoneNumber;
+      }
+
+      const result = await dispatch(register(registrationData));
+      if (register.fulfilled.match(result)) {
+        messageApi.success("Успешно зарегистрировано!");
         form.resetFields();
       }
-    }
-  }, [actionData, messageApi, form]);
-
-  const handleSubmit = async () => {
-    try {
-      const values = await form.validateFields();
-      submit(values, {
-        method: "post",
-        action: `/auth?mode=${isLogin ? "signin" : "signup"}`,
-      });
-    } catch (errorInfo) {
-      console.log("Validation Failed:", errorInfo);
     }
   };
 
@@ -69,7 +78,6 @@ const AuthenticationPage: React.FC = () => {
       style={{
         minHeight: "100vh",
         display: "flex",
-
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#f5f7fa",
@@ -84,7 +92,6 @@ const AuthenticationPage: React.FC = () => {
           width: "100%",
           maxWidth: "1000px",
           minHeight: "600px",
-          height: "810%",
           borderRadius: "16px",
           overflow: "hidden",
           boxShadow: "0 12px 30px rgba(0,0,0,0.15)",
@@ -97,15 +104,8 @@ const AuthenticationPage: React.FC = () => {
             backgroundImage: `url(${authImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "#fff",
-            textAlign: "center",
-            padding: "20px",
-            position: "relative",
           }}
-        ></div>
+        />
 
         <div
           style={{
@@ -120,23 +120,22 @@ const AuthenticationPage: React.FC = () => {
           <Form
             form={form}
             onFinish={handleSubmit}
-            validateTrigger="onFinish"
             layout="vertical"
-            className="form"
             style={{ width: "100%", maxWidth: 400 }}
           >
             <Title level={2}>{isLogin ? "Вход" : "Регистрация"}</Title>
+
             <Col>
               {isLogin ? (
                 <>
-                  <Form.Item<FieldType>
+                  <Form.Item<SignInFields>
                     name="login"
                     label="Логин"
                     rules={loginRules}
                   >
                     <Input placeholder="Введите логин" />
                   </Form.Item>
-                  <Form.Item<FieldType>
+                  <Form.Item<SignInFields>
                     name="password"
                     label="Пароль"
                     rules={passwordRules}
@@ -146,28 +145,28 @@ const AuthenticationPage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <Form.Item<FieldType>
+                  <Form.Item<SignUpFields>
                     name="username"
                     label="Имя пользователя"
                     rules={usernameRules}
                   >
                     <Input placeholder="Введите имя пользователя" />
                   </Form.Item>
-                  <Form.Item<FieldType>
+                  <Form.Item<SignUpFields>
                     name="login"
                     label="Логин"
                     rules={loginRules}
                   >
                     <Input placeholder="Введите логин" />
                   </Form.Item>
-                  <Form.Item<FieldType>
+                  <Form.Item<SignUpFields>
                     name="password"
                     label="Пароль"
                     rules={passwordRules}
                   >
                     <Input.Password placeholder="Введите пароль" />
                   </Form.Item>
-                  <Form.Item<FieldType>
+                  <Form.Item<SignUpFields>
                     name="confirmPassword"
                     label="Подтвердите пароль"
                     dependencies={["password"]}
@@ -175,50 +174,43 @@ const AuthenticationPage: React.FC = () => {
                   >
                     <Input.Password placeholder="Подтвердите пароль" />
                   </Form.Item>
-                  <Form.Item<FieldType>
+                  <Form.Item<SignUpFields>
                     name="email"
                     label="Email"
                     rules={emailRules}
                   >
                     <Input placeholder="Введите email" />
                   </Form.Item>
-                  <Form.Item<FieldType>
+                  <Form.Item<SignUpFields>
                     name="phoneNumber"
                     label="Телефон"
                     rules={phoneNumberRules}
                   >
-                    <Input
-                      addonBefore="+"
-                      placeholder="Введите номер телефона"
-                    />
+                    <Input addonBefore="+" placeholder="Введите номер телефона" />
                   </Form.Item>
                 </>
               )}
-              <div className="actions">
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Button type="link" block>
-                      <Link to={`?mode=${isLogin ? "signup" : "signin"}`}>
-                        {isLogin ? "Зарегистрироваться" : "Войти"}
-                      </Link>
-                    </Button>
-                  </Col>
-                  <Col span={12}>
-                    <Button
-                      type="primary"
-                      block
-                      disabled={isSubmitting}
-                      htmlType="submit"
-                    >
-                      {isSubmitting
-                        ? "Отправка..."
-                        : isLogin
-                        ? "Войти"
-                        : "Зарегистрироваться"}
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
+
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Button type="link" block>
+                    <Link to={`?mode=${isLogin ? "signup" : "signin"}`}>
+                      {isLogin ? "Зарегистрироваться" : "Войти"}
+                    </Link>
+                  </Button>
+                </Col>
+                <Col span={12}>
+                  <Button
+                    type="primary"
+                    block
+                    loading={isSubmitting}
+                    disabled={isSubmitting}
+                    htmlType="submit"
+                  >
+                    {isLogin ? "Войти" : "Зарегистрироваться"}
+                  </Button>
+                </Col>
+              </Row>
             </Col>
           </Form>
         </div>
@@ -227,4 +219,4 @@ const AuthenticationPage: React.FC = () => {
   );
 };
 
-export default AuthenticationPage;
+export default AuthForm;

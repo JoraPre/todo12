@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import { Checkbox, Button, Input, message, Form } from "antd";
-import { updateTask, deleteTask } from "../../Api/apiclone1.tsx";
-import type { Todo } from "../../types/type.tsx";
-
-const TASK_INPUT_LENGTH = { MIN: 1, MAX: 100 };
-
-import { Space } from "antd";
+import { Checkbox, Button, Input, message, Form, Space } from "antd";
 import {
   SaveOutlined,
   EditOutlined,
   DeleteOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
+import { updateTask, deleteTask } from "../../api/api";
+import type { Todo } from "../../types/todo";
+
+const TASK_INPUT_LENGTH = { MIN: 1, MAX: 100 };
 
 type TaskItemProps = {
   task: Todo;
@@ -25,35 +23,33 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, updateTasks }) => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleSave = async (values: { title: string }) => {
-    const title = values.title;
     setIsUpdating(true);
-
     try {
-      await updateTask({ ...task, title: title });
+      await updateTask({ ...task, title: values.title });
       await updateTasks();
       setIsEditing(false);
-      messageApi.success("Task updated");
+      messageApi.success("Задача обновлена");
     } catch (error) {
       console.error(error);
-      messageApi.error("Update failed");
+      messageApi.error("Не удалось обновить задачу");
     } finally {
       setIsUpdating(false);
     }
   };
 
   const handleCancel = () => {
-    form.setFieldsValue({ title: task.title });
+    form.resetFields();
     setIsEditing(false);
   };
 
-  const handleCheckboxClick = async () => {
+  const handleCheckboxChange = async () => {
     setIsUpdating(true);
     try {
       await updateTask({ ...task, isDone: !task.isDone });
       await updateTasks();
     } catch (error) {
       console.error(error);
-      messageApi.error("Status update failed");
+      messageApi.error("Не удалось изменить статус");
     } finally {
       setIsUpdating(false);
     }
@@ -64,10 +60,10 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, updateTasks }) => {
     try {
       await deleteTask(id);
       await updateTasks();
-      messageApi.success("Task deleted");
+      messageApi.success("Задача удалена");
     } catch (error) {
       console.error(error);
-      messageApi.error("Delete failed");
+      messageApi.error("Не удалось удалить задачу");
     } finally {
       setIsUpdating(false);
     }
@@ -75,6 +71,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, updateTasks }) => {
 
   return (
     <div style={{ width: 400, margin: "0 auto" }}>
+      {contextHolder}
       <div
         style={{
           display: "flex",
@@ -84,10 +81,8 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, updateTasks }) => {
           gap: "12px",
         }}
       >
-        {contextHolder}
-
         <Checkbox
-          onChange={handleCheckboxClick}
+          onChange={handleCheckboxChange}
           checked={task.isDone}
           disabled={isUpdating}
         />
@@ -103,15 +98,9 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, updateTasks }) => {
               <Form.Item
                 name="title"
                 rules={[
-                  { required: true, message: "Required" },
-                  {
-                    min: TASK_INPUT_LENGTH.MIN,
-                    message: `Min ${TASK_INPUT_LENGTH.MIN} chars`,
-                  },
-                  {
-                    max: TASK_INPUT_LENGTH.MAX,
-                    message: `Max ${TASK_INPUT_LENGTH.MAX} chars`,
-                  },
+                  { required: true, message: "Обязательное поле" },
+                  { min: TASK_INPUT_LENGTH.MIN, message: `Мин. ${TASK_INPUT_LENGTH.MIN} симв.` },
+                  { max: TASK_INPUT_LENGTH.MAX, message: `Макс. ${TASK_INPUT_LENGTH.MAX} симв.` },
                 ]}
                 style={{ flex: 1, marginBottom: 0 }}
               >

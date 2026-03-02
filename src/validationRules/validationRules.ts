@@ -1,7 +1,7 @@
+import type { Rule } from "antd/es/form";
 import type { FormInstance } from "antd/es/form";
-import type { RuleObject } from "antd/es/form";
 
-export const usernameRules = [
+export const usernameRules: Rule[] = [
   { required: true, message: "Имя пользователя обязательно!" },
   {
     min: 1,
@@ -14,7 +14,7 @@ export const usernameRules = [
   },
 ];
 
-export const loginRules = [
+export const loginRules: Rule[] = [
   { required: true, message: "Логин обязателен!" },
   { min: 2, max: 60, message: "Логин должен быть от 2 до 60 символов!" },
   {
@@ -23,18 +23,18 @@ export const loginRules = [
   },
 ];
 
-export const passwordRules = [
+export const passwordRules: Rule[] = [
   { required: true, message: "Пароль обязателен!" },
   { min: 6, max: 60, message: "Пароль должен быть от 6 до 60 символов!" },
 ];
 
-export const confirmPasswordRules = [
+export const confirmPasswordRules: Rule[] = [
   {
     required: true,
     message: "Подтверждение пароля обязательно!",
   },
   ({ getFieldValue }: Pick<FormInstance, "getFieldValue">) => ({
-    validator(_: RuleObject, value: string) {
+    validator(_: Rule, value: string) {
       if (!value || getFieldValue("password") === value) {
         return Promise.resolve();
       }
@@ -42,21 +42,22 @@ export const confirmPasswordRules = [
     },
   }),
 ];
-export const emailRules = [
+
+export const emailRules: Rule[] = [
   { required: true, message: "Почтовый адрес обязателен!" },
   {
-    pattern: /^[a-zA-Zа-яА-ЯёЁ0-9]+@[a-zA-Zа-яА-ЯёЁ]+\.[a-zA-Zа-яА-ЯёЁ]+$/,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     message: "Некорректный формат email!",
   },
 ];
 
-export const phoneNumberRules = [
+export const phoneNumberRules: Rule[] = [
   {
     required: false,
-    message: "Некорректный формат номера телефона! Пример: +71234567890",
+    message: "Некорректный формат номера телефона! Пример: 71234567890",
   },
   {
-    pattern: /^\+?[0-9\s\-\(\)]{10,}$/,
-    message: "Некорректный  as saформат номера телефона! Пример: +71234567890",
+    pattern: /^\+?[0-9\s\-()]{10,}$/,
+    message: "Некорректный формат номера телефона! Пример: 71234567890",
   },
 ];

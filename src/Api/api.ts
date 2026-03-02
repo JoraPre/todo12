@@ -1,16 +1,8 @@
 import axios, { AxiosError } from "axios";
-
-import { tokenManager } from "../tokenmanager/tokenmanager.tsx";
-import type {
-  Todo,
-  TodoInfo,
-  TaskCategory,
-  UserRegistration,
-  UserLogin,
-  // Token,
-  Profile,
-  AuthResponse,
-} from "../types/type.tsx";
+import { tokenManager } from "../tokenManager/tokenManager";
+import type { Todo, TodoInfo, TaskCategory } from "../types/todo";
+import type { UserRegistration, UserLogin, AuthResponse } from "../types/auth";
+import type { Profile } from "../types/user";
 
 export const api = axios.create({
   baseURL: "https://easydev.club/api/v1/",
@@ -18,14 +10,6 @@ export const api = axios.create({
     "Content-Type": "application/json",
   },
 });
-// const API = "https://easydev.club/api/";
-
-// export const apiClient = axios.create({
-//   baseURL: API,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
 
 let refreshPromise: Promise<string | null> | null = null;
 
@@ -74,7 +58,9 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as any;
+    const originalRequest = error.config as typeof error.config & {
+      _retry?: boolean;
+    };
 
     if (
       error.config?.url?.includes("/auth/signin") ||
@@ -98,7 +84,7 @@ api.interceptors.response.use(
       const newAccessToken = await refreshPromise;
 
       if (newAccessToken) {
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        originalRequest.headers!.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } else {
         return Promise.reject(new AxiosError("Unauthorized"));
@@ -106,19 +92,11 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
-const handleApiError = (error: unknown, defaultStatus = 500) => {
-  if (axios.isAxiosError(error) && error.response) {
-    return { status: error.response.status };
-  }
-  console.error("An unexpected error occurred:", error);
-  return { status: defaultStatus };
-};
-
 export async function getTasks(
-  status: TaskCategory = "all"
+  status: TaskCategory = "all",
 ): Promise<{ data: Todo[]; info: TodoInfo }> {
   const response = await api.get("/todos", {
     params: { filter: status },
@@ -148,30 +126,21 @@ export async function updateTask(task: Todo): Promise<Todo> {
 }
 
 export async function signUp(
-  registrationData: UserRegistration
+  registrationData: UserRegistration,
 ): Promise<{ status: number }> {
-  try {
-    const response = await api.post("/auth/signup", registrationData);
-    return { status: response.status };
-  } catch (error) {
-    return handleApiError(error);
-  }
+  const response = await api.post("/auth/signup", registrationData);
+  return { status: response.status };
 }
 
 export async function signIn(authData: UserLogin): Promise<AuthResponse> {
-  try {
-    const response = await api.post("/auth/signin", authData);
-    return {
-      status: response.status,
-      token: {
-        accessToken: response.data.accessToken,
-        refreshToken: response.data.refreshToken,
-      },
-    };
-  } catch (error) {
-    const { status } = handleApiError(error);
-    return { status };
-  }
+  const response = await api.post("/auth/signin", authData);
+  return {
+    status: response.status,
+    token: {
+      accessToken: response.data.accessToken,
+      refreshToken: response.data.refreshToken,
+    },
+  };
 }
 
 export async function getProfile(): Promise<Profile> {

@@ -1,6 +1,6 @@
 export class TokenManager {
-  private _refreshToken: string = "";
-  private _accessToken: string = "";
+  private _refreshToken: string | null = null;
+  private _accessToken: string | null = null;
 
   constructor() {
     const savedRefresh = localStorage.getItem("refreshToken");
@@ -9,26 +9,26 @@ export class TokenManager {
     }
   }
 
-  setAccessToken(token: string) {
+  setAccessToken(token: string): void {
     this._accessToken = token;
   }
 
-  getAccessToken() {
+  getAccessToken(): string | null {
     return this._accessToken;
   }
 
-  setRefreshToken(token: string) {
+  setRefreshToken(token: string): void {
     this._refreshToken = token;
     localStorage.setItem("refreshToken", token);
   }
 
-  getRefreshToken() {
+  getRefreshToken(): string | null {
     return this._refreshToken;
   }
 
-  removeTokens() {
-    this._accessToken = "";
-    this._refreshToken = "";
+  removeTokens(): void {
+    this._accessToken = null;
+    this._refreshToken = null;
     localStorage.removeItem("refreshToken");
   }
 }

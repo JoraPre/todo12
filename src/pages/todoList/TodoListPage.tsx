@@ -1,21 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { message } from "antd";
 import { useSearchParams } from "react-router-dom";
 
-import TaskAdd from "../../../components/taskAdd/taslAdd.tsx";
-import TodoList from "../../../components/todoList/taskList.tsx";
-
-import { getTasks } from "../../../Api/apiclone1.tsx";
-import type { Todo, TodoInfo, TaskCategory } from "../../../types/type.tsx";
+import TaskAdd from "../../components/taskAdd/TaskAdd";
+import TodoList from "../../components/todoList/TodoList";
+import { getTasks } from "../../api/api";
+import type { Todo, TodoInfo, TaskCategory } from "../../types/todo";
 
 const TIMEOUT = 5000;
+const VALID_CATEGORIES: TaskCategory[] = ["all", "inWork", "completed"];
+
+const isValidCategory = (value: string | null): value is TaskCategory =>
+  VALID_CATEGORIES.includes(value as TaskCategory);
 
 export const TodoListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [messageApi, contextHolder] = message.useMessage();
+
   const [category, setCategory] = useState<TaskCategory>(() => {
-    const urlCategory = searchParams.get("category") as TaskCategory;
-    const savedCategory = localStorage.getItem("taskCategory") as TaskCategory;
-    return urlCategory || savedCategory || "all";
+    const urlCategory = searchParams.get("category");
+    const savedCategory = localStorage.getItem("taskCategory");
+    if (isValidCategory(urlCategory)) return urlCategory;
+    if (isValidCategory(savedCategory)) return savedCategory;
+    return "all";
   });
 
   const [tasks, setTasks] = useState<Todo[]>([]);
@@ -24,9 +31,8 @@ export const TodoListPage: React.FC = () => {
     inWork: 0,
     completed: 0,
   });
-  const [messageApi, contextHolder] = message.useMessage();
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const response = await getTasks(category);
       setTasks(response.data);
@@ -35,13 +41,11 @@ export const TodoListPage: React.FC = () => {
       console.error(error);
       messageApi.error("Не удалось загрузить задачи. Попробуйте снова.");
     }
-  };
+  }, [category, messageApi]);
 
   const updateCategory = (newCategory: TaskCategory) => {
     setCategory(newCategory);
-
     setSearchParams({ category: newCategory });
-
     localStorage.setItem("taskCategory", newCategory);
   };
 
@@ -49,7 +53,7 @@ export const TodoListPage: React.FC = () => {
     fetchTasks();
     const interval = setInterval(fetchTasks, TIMEOUT);
     return () => clearInterval(interval);
-  }, [category]);
+  }, [fetchTasks]);
 
   return (
     <>
