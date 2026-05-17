@@ -1,4 +1,5 @@
 import { StrictMode } from "react";
+<<<<<<< HEAD
 
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
@@ -18,4 +19,13 @@ createRoot(document.getElementById("root")!).render(
       <RouterProvider router={router} />
     </Provider>
   </StrictMode>,
+=======
+import { createRoot } from "react-dom/client";
+import App from "./app.tsx";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+>>>>>>> origin/develop
 );
