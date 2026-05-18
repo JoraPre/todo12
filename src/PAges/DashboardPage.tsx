@@ -66,14 +66,12 @@ function DashboardPage() {
     navigate("/");
   };
 
-  // Статистика
   const totalUsers = users.length;
 
   const blockedUsers = users.filter((u) => u.isBlocked).length;
 
   const activeUsers = totalUsers - blockedUsers;
 
-  // Роли
   const roleCounts: Record<string, number> = {};
 
   users.forEach((u) =>
@@ -82,7 +80,6 @@ function DashboardPage() {
     }),
   );
 
-  // График регистраций
   const registrations = Array.from({ length: 10 }, (_, i) => {
     const date = new Date();
 
@@ -154,7 +151,6 @@ function DashboardPage() {
 
   return (
     <div style={{ padding: 24 }}>
-      {/* Шапка */}
       <Row justify="space-between" align="middle" style={{ marginBottom: 24 }}>
         <h1 style={{ margin: 0 }}>Дашборд</h1>
 
@@ -169,7 +165,6 @@ function DashboardPage() {
         </div>
       </Row>
 
-      {/* Ошибка */}
       {error && (
         <Alert
           message={error}
@@ -181,7 +176,6 @@ function DashboardPage() {
         />
       )}
 
-      {/* Карточки */}
       <Row gutter={16} style={{ marginBottom: 24 }}>
         {[
           {
@@ -216,7 +210,6 @@ function DashboardPage() {
         ))}
       </Row>
 
-      {/* Статус */}
       <Row gutter={16} style={{ marginBottom: 24 }}>
         <Col span={12}>
           <Card title="Статус пользователей">
@@ -238,7 +231,6 @@ function DashboardPage() {
           </Card>
         </Col>
 
-        {/* Роли */}
         <Col span={12}>
           <Card title="Роли пользователей">
             {Object.entries(roleCounts).map(([role, count]) => (
@@ -259,7 +251,6 @@ function DashboardPage() {
         </Col>
       </Row>
 
-      {/* Регистрации */}
       <Card
         title="Регистрации пользователей"
         extra={

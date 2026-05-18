@@ -16,7 +16,6 @@ export function computeStats(
   const blockedUsers = users.filter((u) => u.isBlocked).length;
   const activeUsers = totalUsers - blockedUsers;
 
-  // Распределение по ролям
   const roleCounts: Record<string, number> = {};
   users.forEach((u) => {
     u.roles.forEach((role) => {
@@ -61,7 +60,6 @@ export function computeStats(
 
       label = `Нед ${start.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" })}`;
     } else {
-      // month
       start = new Date(now.getFullYear(), now.getMonth() - i, 1);
       end = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
       end.setHours(23, 59, 59, 999);
