@@ -1,45 +1,79 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { loginThunk } from "../store/auth/slices/authSlice";
+import { Form, Input, Button, Card, Typography, Alert } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+
+const { Title } = Typography;
 
 function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
 
-  const [login, setLogin] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleLogin = async () => {
-    const result = await dispatch(loginThunk({ login, password }));
+  const handleLogin = async (values: { login: string; password: string }) => {
+    const result = await dispatch(loginThunk(values));
     if (loginThunk.fulfilled.match(result)) {
       navigate("/dashboard");
     }
   };
 
   return (
-    <div>
-      <h1>Logsin</h1>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#f0f2f5",
+      }}
+    >
+      <Card style={{ width: 380, boxShadow: "0 4px 24px rgba(0,0,0,0.1)" }}>
+        <Title level={3} style={{ textAlign: "center", marginBottom: 24 }}>
+          Вход в систему
+        </Title>
 
-      <input
-        placeholder="login"
-        value={login}
-        onChange={(e) => setLogin(e.target.value)}
-      />
+        {error && (
+          <Alert
+            message={error}
+            type="error"
+            showIcon
+            style={{ marginBottom: 16 }}
+          />
+        )}
 
-      <input
-        type="password"
-        placeholder="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <Form layout="vertical" onFinish={handleLogin} autoComplete="off">
+          <Form.Item
+            name="login"
+            rules={[{ required: true, message: "Введите логин" }]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="Логин" size="large" />
+          </Form.Item>
 
-      <button onClick={handleLogin} disabled={loading}>
-        {loading ? "Загрузка..." : "Login"}
-      </button>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Введите пароль" }]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Пароль"
+              size="large"
+            />
+          </Form.Item>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              size="large"
+              block
+            >
+              Войти
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
     </div>
   );
 }
