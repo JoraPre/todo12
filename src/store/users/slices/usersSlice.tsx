@@ -4,9 +4,11 @@ import {
   blockUser,
   unblockUser,
   updateUser,
+  deleteUser,
 } from "../../../api/auth";
 import type { User } from "../../../types.ts/types";
 import { getErrorMessage } from "../../../helpers/errorMessage";
+import { addNotification } from "../../notifications/slices/notificationsSlice";
 
 export const fetchUsersThunk = createAsyncThunk<
   User[],
@@ -25,9 +27,10 @@ export const blockUserThunk = createAsyncThunk<
   number,
   number,
   { rejectValue: string }
->("users/block", async (id, { rejectWithValue }) => {
+>("users/block", async (id, { rejectWithValue, dispatch }) => {
   try {
     await blockUser(id);
+    dispatch(addNotification({ type: "warning", title: `Пользователь #${id} заблокирован` }));
     return id;
   } catch (error) {
     return rejectWithValue(getErrorMessage(error));
@@ -38,9 +41,10 @@ export const unblockUserThunk = createAsyncThunk<
   number,
   number,
   { rejectValue: string }
->("users/unblock", async (id, { rejectWithValue }) => {
+>("users/unblock", async (id, { rejectWithValue, dispatch }) => {
   try {
     await unblockUser(id);
+    dispatch(addNotification({ type: "success", title: `Пользователь #${id} разблокирован` }));
     return id;
   } catch (error) {
     return rejectWithValue(getErrorMessage(error));
@@ -51,10 +55,25 @@ export const updateUserThunk = createAsyncThunk<
   User,
   { id: number; data: Partial<Pick<User, "username" | "email" | "phoneNumber" | "roles">> },
   { rejectValue: string }
->("users/update", async ({ id, data }, { rejectWithValue }) => {
+>("users/update", async ({ id, data }, { rejectWithValue, dispatch }) => {
   try {
     const response = await updateUser(id, data);
+    dispatch(addNotification({ type: "success", title: `Пользователь #${id} обновлён` }));
     return response;
+  } catch (error) {
+    return rejectWithValue(getErrorMessage(error));
+  }
+});
+
+export const deleteUserThunk = createAsyncThunk<
+  number,
+  number,
+  { rejectValue: string }
+>("users/delete", async (id, { rejectWithValue, dispatch }) => {
+  try {
+    await deleteUser(id);
+    dispatch(addNotification({ type: "error", title: `Пользователь #${id} удалён` }));
+    return id;
   } catch (error) {
     return rejectWithValue(getErrorMessage(error));
   }
@@ -120,6 +139,17 @@ const usersSlice = createSlice({
       .addCase(updateUserThunk.fulfilled, (state, action) => {
         const idx = state.users.findIndex((u) => u.id === action.payload.id);
         if (idx !== -1) state.users[idx] = action.payload;
+      })
+
+      .addCase(deleteUserThunk.pending, (state, action) => {
+        state.actionLoading = action.meta.arg;
+      })
+      .addCase(deleteUserThunk.fulfilled, (state, action) => {
+        state.users = state.users.filter((u) => u.id !== action.payload);
+        state.actionLoading = null;
+      })
+      .addCase(deleteUserThunk.rejected, (state) => {
+        state.actionLoading = null;
       });
   },
 });

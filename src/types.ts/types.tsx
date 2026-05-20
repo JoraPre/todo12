@@ -22,3 +22,18 @@ export interface AuthData {
   login: string;
   password: string;
 }
+
+export interface UsersQueryParams {
+  page: number;
+  limit: number;
+  search?: string;
+  role?: string;
+  isBlocked?: boolean;
+}
+
+export interface UsersPaginatedResponse {
+  data: User[];
+  total: number;
+  page: number;
+  limit: number;
+}
