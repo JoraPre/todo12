@@ -43,7 +43,15 @@ export async function getUserById(id: number) {
   return response.data;
 }
 
-export async function updateUser(id: number, data: Partial<{ username: string; email: string; phoneNumber: string; roles: string[] }>) {
+export async function updateUser(
+  id: number,
+  data: Partial<{
+    username: string;
+    email: string;
+    phoneNumber: string;
+    roles: string[];
+  }>,
+) {
   const response = await api.patch(`/admin/users/${id}`, data);
   return response.data;
 }
