@@ -1,13 +1,23 @@
 import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { fetchMeThunk } from "../store/auth/slices/authSlice";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const token = localStorage.getItem("token");
+  const dispatch = useAppDispatch();
+  const { isAuthorized, currentUser } = useAppSelector((state) => state.auth);
 
-  if (!token) {
+  useEffect(() => {
+    if (isAuthorized && !currentUser) {
+      dispatch(fetchMeThunk());
+    }
+  }, [isAuthorized, currentUser, dispatch]);
+
+  if (!isAuthorized) {
     return <Navigate to="/" replace />;
   }
 
