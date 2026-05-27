@@ -1,5 +1,5 @@
 import { api } from "./auth";
-import type { User, PeriodType, DashboardStats } from "./types";
+import type { User, PeriodType, DashboardStats } from "../types.ts/types";
 
 export async function getAllUsers() {
   const response = await api.get("/admin/users", {

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllUsers, computeStats } from "../../../api/dashboard";
-import type { DashboardStats, PeriodType } from "../../../types";
+import { getAllUsers, computeStats } from "../../../api/dashBoards";
+import type { DashboardStats, PeriodType } from "../../../types.ts/types";
 import { getErrorMessage } from "../../../helpers/errorMessage";
 
 export const fetchDashboardThunk = createAsyncThunk<

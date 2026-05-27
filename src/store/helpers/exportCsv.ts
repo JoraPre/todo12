@@ -1,7 +1,14 @@
-import type { User } from "../types.ts/types";
-
+import type { User } from "../../types.ts/types";
 export function exportUsersToCsv(users: User[]): void {
-  const headers = ["ID", "Имя", "Email", "Телефон", "Роли", "Статус", "Дата регистрации"];
+  const headers = [
+    "ID",
+    "Имя",
+    "Email",
+    "Телефон",
+    "Роли",
+    "Статус",
+    "Дата регистрации",
+  ];
 
   const rows = users.map((u) => [
     u.id,
@@ -20,7 +27,9 @@ export function exportUsersToCsv(users: User[]): void {
     .join("\n");
 
   const bom = "\uFEFF";
-  const blob = new Blob([bom + csvContent], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob([bom + csvContent], {
+    type: "text/csv;charset=utf-8;",
+  });
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement("a");

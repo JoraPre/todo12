@@ -6,7 +6,8 @@ import {
   markAllAsRead,
   clearAll,
 } from "../store/notifications/slices/notificationsSlice";
-
+import type { RootState } from "../store";
+import type { Notification } from "../store/notifications/slices/notificationsSlice";
 const { Text } = Typography;
 
 const TYPE_COLORS: Record<string, string> = {
@@ -18,8 +19,8 @@ const TYPE_COLORS: Record<string, string> = {
 
 function NotificationsDropdown() {
   const dispatch = useAppDispatch();
-  const { items } = useAppSelector((state) => state.notifications);
-  const unreadCount = items.filter((n) => !n.read).length;
+  const { items } = useAppSelector((state: RootState) => state.notifications);
+  const unreadCount = items.filter((n: Notification) => !n.read).length;
 
   const overlay = (
     <div
@@ -73,7 +74,7 @@ function NotificationsDropdown() {
         ) : (
           <List
             dataSource={items}
-            renderItem={(item) => (
+            renderItem={(item: Notification) => (
               <List.Item
                 style={{
                   padding: "10px 16px",

@@ -1,31 +1,22 @@
-import axios from "axios";
-import type {
-  AuthData,
-  Token,
-  Profile,
-  RefreshToken,
-} from "../types/typesAuth";
+import axios from 'axios';
+import type { AuthData, Token, Profile, RefreshToken } from '../types.ts/types';
 
 let _accessToken: string | null = null;
 
 export const authTokenStore = {
   getAccessToken: (): string | null => _accessToken,
-  setAccessToken: (token: string): void => {
-    _accessToken = token;
-  },
-  clearAccessToken: (): void => {
-    _accessToken = null;
-  },
+  setAccessToken: (token: string): void => { _accessToken = token; },
+  clearAccessToken: (): void => { _accessToken = null; },
 };
 
 export const api = axios.create({
-  baseURL: "https://easydev.club/api/v1",
-  headers: { "Content-Type": "application/json" },
+  baseURL: 'https://easydev.club/api/v1',
+  headers: { 'Content-Type': 'application/json' },
   timeout: 5000,
 });
 
 const refreshAPI = axios.create({
-  baseURL: "https://easydev.club/api/v1",
+  baseURL: 'https://easydev.club/api/v1',
 });
 
 api.interceptors.request.use((config) => {
@@ -41,27 +32,25 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._isRetry &&
-      !originalRequest.url.includes("/auth/refresh")
+      !originalRequest.url.includes('/auth/refresh')
     ) {
       originalRequest._isRetry = true;
-      const refreshToken = localStorage.getItem("refreshToken");
+      const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) {
         authTokenStore.clearAccessToken();
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
         return Promise.reject(error);
       }
       try {
-        const response = await refreshAPI.post<Token>("/auth/refresh", {
-          refreshToken,
-        });
+        const response = await refreshAPI.post<Token>('/auth/refresh', { refreshToken });
         authTokenStore.setAccessToken(response.data.accessToken);
-        localStorage.setItem("refreshToken", response.data.refreshToken);
+        localStorage.setItem('refreshToken', response.data.refreshToken);
         originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
         return api.request(originalRequest);
       } catch {
         authTokenStore.clearAccessToken();
-        localStorage.removeItem("refreshToken");
+        localStorage.removeItem('refreshToken');
         return Promise.reject(error);
       }
     }
@@ -70,22 +59,27 @@ api.interceptors.response.use(
 );
 
 export async function loginUser(data: AuthData): Promise<Token> {
-  const response = await api.post<Token>("/auth/signin", data);
+  const response = await api.post<Token>('/auth/signin', data);
   return response.data;
 }
 
-export async function getProfile(): Promise<Profile> {
-  const response = await api.get<Profile>("/user/profile");
+export async function getMe(): Promise<Profile> {
+  const response = await api.get<Profile>('/user/profile');
   return response.data;
 }
 
 export async function refreshTokenRequest(data: RefreshToken): Promise<Token> {
-  const response = await api.post<Token>("/auth/refresh", data);
+  const response = await api.post<Token>('/auth/refresh', data);
   return response.data;
 }
 
 export async function logoutUser(): Promise<void> {
-  await api.post("/user/logout");
+  await api.post('/user/logout');
+}
+
+export async function getAllUsers() {
+  const response = await api.get('/admin/users', { params: { limit: 1000, page: 1 } });
+  return response.data;
 }
 
 export async function blockUser(id: number) {
@@ -98,10 +92,7 @@ export async function unblockUser(id: number) {
   return response.data;
 }
 
-export async function updateUser(
-  id: number,
-  data: Partial<Pick<Profile, "username" | "email" | "phoneNumber" | "roles">>,
-) {
+export async function updateUser(id: number, data: Partial<Pick<Profile, 'username' | 'email' | 'phoneNumber' | 'roles'>>) {
   const response = await api.patch(`/admin/users/${id}`, data);
   return response.data;
 }

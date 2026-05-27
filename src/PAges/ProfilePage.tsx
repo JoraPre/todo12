@@ -21,7 +21,6 @@ import {
 } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { updateMeThunk } from "../store/auth/slices/authSlice";
-import type { User } from "../types.ts/types";
 
 const { Title, Text } = Typography;
 

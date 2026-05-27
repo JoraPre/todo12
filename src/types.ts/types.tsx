@@ -37,3 +37,16 @@ export interface UsersPaginatedResponse {
   page: number;
   limit: number;
 }
+
+export interface Token {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface RefreshToken {
+  refreshToken: string;
+}
+
+export interface Profile extends User {
+  phoneNumber: string;
+}

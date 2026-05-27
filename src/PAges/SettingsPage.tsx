@@ -20,7 +20,7 @@ import {
 import { useAppDispatch } from "../hooks";
 import { clearAll } from "../store/notifications/slices/notificationsSlice";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 interface SettingRowProps {
   label: string;
@@ -91,30 +91,21 @@ function SettingsPage() {
               label="Блокировка пользователя"
               description="Уведомлять при блокировке или разблокировке"
             >
-              <Switch
-                checked={notifyOnBlock}
-                onChange={setNotifyOnBlock}
-              />
+              <Switch checked={notifyOnBlock} onChange={setNotifyOnBlock} />
             </SettingRow>
 
             <SettingRow
               label="Удаление пользователя"
               description="Уведомлять при удалении пользователя"
             >
-              <Switch
-                checked={notifyOnDelete}
-                onChange={setNotifyOnDelete}
-              />
+              <Switch checked={notifyOnDelete} onChange={setNotifyOnDelete} />
             </SettingRow>
 
             <SettingRow
               label="Редактирование пользователя"
               description="Уведомлять при изменении данных пользователя"
             >
-              <Switch
-                checked={notifyOnUpdate}
-                onChange={setNotifyOnUpdate}
-              />
+              <Switch checked={notifyOnUpdate} onChange={setNotifyOnUpdate} />
             </SettingRow>
           </List>
 
