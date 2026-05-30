@@ -1,0 +1,50 @@
+* [33m6f3d6da[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/feature/dashboard2[m[33m, [m[1;31morigin/feature/dashboard[m[33m, [m[1;32mfeature/dashboard2[m[33m, [m[1;32mfeature/dashboard[m[33m)[m tochno last fix
+* [33m7a28217[m last fix
+* [33m0595524[m created router and routerProtected
+* [33m9bae67f[m authTokenStore + refresh token interceptor
+* [33m5c56e82[m pages settings
+* [33ma13de4d[m NotificationsDropdown
+* [33m7dce969[m api deleteUser
+* [33m4efb8f4[m notificationsSlice + add to store
+* [33m510abb9[m ProfilePage view+edit + fix ProtectedRoute
+* [33m21afd8a[m authSlice currentUser, fetchMeThunk, updateMeThunk
+* [33mb8aea16[m auth get me + axiosInterceptors
+* [33m9c0af65[m api block/unblock/updateUser +usersSlice block/unblock/update thunks
+* [33m72d3454[m update routing
+* [33m2cd2a9f[m userpage
+* [33m285034f[m usersSlice + add to store
+* [33m048e80e[m sider+header+modal
+* [33m3177737[m loginPage on antd+ant design
+* [33md1b7bce[m fix dashboard loginpage + app
+* [33m5bc1826[m structure
+* [33mcfe93a7[m api auth+dashBoards
+* [33m0818623[m types
+* [33m609698c[m dashboardpage
+* [33m02f7f9a[m loginpage
+* [33m4e1d738[m routing pages
+* [33m847fedf[m init projec
+*   [33mbafa276[m[33m ([m[1;31morigin/feature/ED-422-FULL-PROJECT[m[33m)[m s
+[32m|[m[33m\[m  
+[32m|[m *   [33m1dce35f[m[33m ([m[1;31morigin/develop[m[33m)[m Merge pull request #7 from JoraPre/feature/ED-420-FULL-PROJECT
+[32m|[m [34m|[m[35m\[m  
+[32m|[m [34m|[m * [33mcbe89f6[m[33m ([m[1;31morigin/feature/ED-420-FULL-PROJECT[m[33m)[m fix
+[32m|[m [34m|[m * [33m07f5244[m feat: complete project for review
+[32m|[m [34m|[m[34m/[m  
+[32m|[m * [33ma958e9e[m Initial empty develop
+* [33m8a531ff[m feat: add users module
+* [33me86621c[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/feature/scrum944_todo[m[33m, [m[1;31morigin/HEAD[m[33m)[m PR
+* [33m3c35d7b[m fix
+* [33mb716a3d[m bez styles
+* [33m2652d90[m so styles
+* [33mcfd4ee1[m andt+ts+axios
+* [33mc086608[m ts
+* [33m8b94492[m pered ts
+* [33m27b3a5c[m last pravki
+* [33m10990c2[m ispravil
+* [33m9644edb[m fix todDo
+* [33me9bbce9[m pravki review
+* [33mf146a62[m eshe 1
+* [33m8f04e7b[m fix todo
+* [33mb8b1c4d[m изменил туду
+* [33m983c3bb[m dz
+* [33m4f0d741[m first commit
